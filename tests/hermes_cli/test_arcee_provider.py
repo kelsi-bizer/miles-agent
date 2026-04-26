@@ -38,10 +38,10 @@ class TestArceeProviderRegistry:
         assert PROVIDER_REGISTRY["arcee"].auth_type == "api_key"
 
     def test_inference_base_url(self):
-        assert PROVIDER_REGISTRY["arcee"].inference_base_url == "https://api.arcee.ai/api/v1"
+        assert PROVIDER_REGISTRY["arcee"].inference_base_url == "https://api.arcee.ai/v1"
 
     def test_api_key_env_vars(self):
-        assert PROVIDER_REGISTRY["arcee"].api_key_env_vars == ("ARCEEAI_API_KEY",)
+        assert PROVIDER_REGISTRY["arcee"].api_key_env_vars == ("ARCEE_API_KEY", "ARCEEAI_API_KEY")
 
     def test_base_url_env_var(self):
         assert PROVIDER_REGISTRY["arcee"].base_url_env_var == "ARCEE_BASE_URL"
@@ -99,7 +99,7 @@ class TestArceeCredentials:
         monkeypatch.delenv("ARCEE_BASE_URL", raising=False)
         creds = resolve_api_key_provider_credentials("arcee")
         assert creds["api_key"] == "arc-direct-key"
-        assert creds["base_url"] == "https://api.arcee.ai/api/v1"
+        assert creds["base_url"] == "https://api.arcee.ai/v1"
 
     def test_custom_base_url_override(self, monkeypatch):
         monkeypatch.setenv("ARCEEAI_API_KEY", "arc-x")
@@ -166,7 +166,7 @@ class TestArceeURLMapping:
     def test_trajectory_compressor_detects_arcee(self):
         import trajectory_compressor as tc
         comp = tc.TrajectoryCompressor.__new__(tc.TrajectoryCompressor)
-        comp.config = types.SimpleNamespace(base_url="https://api.arcee.ai/api/v1")
+        comp.config = types.SimpleNamespace(base_url="https://api.arcee.ai/v1")
         assert comp._detect_provider() == "arcee"
 
 
